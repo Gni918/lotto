@@ -10,34 +10,25 @@
       background-color: #fff8e7;
     }
 
-    /* 🔥 반짝이는 제목 */
     h1 {
-  font-size: 30pt;
-  color: blue;
-  text-decoration: underline;
-  margin-top: 30px;
+      font-size: 30pt;
+      color: blue;
+      text-decoration: underline;
+      margin-top: 30px;
+      animation: sparkle 2s infinite alternate;
+    }
 
-  animation: sparkle 2s infinite alternate; /* 속도 느리게 */
-}
-
-@keyframes sparkle {
-  0% {
-    text-shadow: 0 0 2px #aaa;
-  }
-  50% {
-    text-shadow: 0 0 6px #66aaff;
-  }
-  100% {
-    text-shadow: 0 0 2px #aaa;
-  }
-}
+    @keyframes sparkle {
+      0% { text-shadow: 0 0 2px #aaa; }
+      50% { text-shadow: 0 0 6px #66aaff; }
+      100% { text-shadow: 0 0 2px #aaa; }
+    }
 
     .lotto-img {
       width: 400px;
       margin: 20px 0;
     }
 
-    /* 🔥 기계 흔들림 */
     .shake {
       animation: shake 0.2s infinite;
     }
@@ -69,30 +60,41 @@
 
     #numbers {
       margin-top: 15px;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
+    }
+
+    .set-box {
+      margin-bottom: 15px;
+    }
+
+    .set-label {
+      display: inline-block;
+      width: 80px;
+      font-size: 20px;
+      color: #333;
     }
 
     .ball {
       display: inline-block;
-      width: 60px;
-      height: 60px;
-      line-height: 60px;
-      margin: 8px;
+      width: 55px;
+      height: 55px;
+      line-height: 55px;
+      margin: 6px;
       border-radius: 50%;
       background-color: gold;
       color: black;
       box-shadow: 2px 2px 5px gray;
+      font-size: 28px;
     }
 
-    /* 🔥 오른쪽 아래 워터마크 */
     .credit {
       position: fixed;
       bottom: 10px;
       right: 15px;
       color: gray;
       font-size: 8pt;
-      opacity: 0.5; /* 살짝 흐리게 */
+      opacity: 0.5;
     }
   </style>
 </head>
@@ -111,13 +113,26 @@
 
   <button onclick="drawLotto()">번호뽑기</button>
 
-  <div id="title">당첨숫자</div>
+  <div id="title">추천 번호</div>
   <div id="numbers"></div>
 
-  <!-- 🔥 워터마크 -->
   <p class="credit">Created by Ai</p>
 
   <script>
+    function makeOneSet() {
+      let lotto = [];
+
+      while (lotto.length < 6) {
+        let num = Math.floor(Math.random() * 45) + 1;
+
+        if (!lotto.includes(num)) {
+          lotto.push(num);
+        }
+      }
+
+      return lotto.sort((a, b) => a - b);
+    }
+
     function drawLotto() {
       const machine = document.getElementById("machine");
       const title = document.getElementById("title");
@@ -131,22 +146,21 @@
       setTimeout(() => {
         machine.classList.remove("shake");
 
-        let lotto = [];
+        let resultHTML = "";
 
-        while (lotto.length < 6) {
-          let num = Math.floor(Math.random() * 45) + 1;
-          if (!lotto.includes(num)) {
-            lotto.push(num);
-          }
+        for (let set = 1; set <= 5; set++) {
+          const lotto = makeOneSet();
+
+          resultHTML += `
+            <div class="set-box">
+              <span class="set-label">${set}set</span>
+              ${lotto.map(n => `<span class="ball">${n}</span>`).join("")}
+            </div>
+          `;
         }
 
-        lotto.sort((a, b) => a - b);
-
         title.style.display = "block";
-
-        numbers.innerHTML = lotto
-          .map(n => `<span class="ball">${n}</span>`)
-          .join("");
+        numbers.innerHTML = resultHTML;
 
       }, 2000);
     }
