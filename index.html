@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title> 지니 추천! 행운의 로또 번호 </title>
+  <title>로또 추첨기</title>
   <style>
     body {
       text-align: center;
@@ -10,17 +10,44 @@
       background-color: #fff8e7;
     }
 
+    /* 🔥 반짝이는 제목 */
     h1 {
-      font-size: 30pt;
-      color: blue;
-      margin-top: 30px;
-    }
+  font-size: 30pt;
+  color: blue;
+  text-decoration: underline;
+  margin-top: 30px;
+
+  animation: sparkle 2s infinite alternate; /* 속도 느리게 */
+}
+
+@keyframes sparkle {
+  0% {
+    text-shadow: 0 0 2px #aaa;
+  }
+  50% {
+    text-shadow: 0 0 6px #66aaff;
+  }
+  100% {
+    text-shadow: 0 0 2px #aaa;
+  }
+}
 
     .lotto-img {
-      width: 500px;
-      max-width: 90%;
-      border-radius: 20px;
+      width: 400px;
       margin: 20px 0;
+    }
+
+    /* 🔥 기계 흔들림 */
+    .shake {
+      animation: shake 0.2s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(2px, 1px) rotate(1deg); }
+      50% { transform: translate(-2px, -1px) rotate(-1deg); }
+      75% { transform: translate(2px, -1px) rotate(1deg); }
+      100% { transform: translate(-2px, 1px) rotate(0deg); }
     }
 
     button {
@@ -31,10 +58,6 @@
       background-color: #ffcc00;
       cursor: pointer;
       font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #ffaa00;
     }
 
     #title {
@@ -61,17 +84,28 @@
       color: black;
       box-shadow: 2px 2px 5px gray;
     }
+
+    /* 🔥 오른쪽 아래 워터마크 */
+    .credit {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      color: gray;
+      font-size: 8pt;
+      opacity: 0.5; /* 살짝 흐리게 */
+    }
   </style>
 </head>
 <body>
 
-  <h1>지니 추천! 행운의 로또 번호</h1>
+  <h1>★Lotto 대박 번호 추첨★</h1>
 
   <img 
-  class="lotto-img"
-  src="lotto.png"
-  alt="로또추첨기"
->
+    id="machine"
+    class="lotto-img"
+    src="lotto.png"
+    alt="로또기계"
+  >
 
   <br>
 
@@ -80,27 +114,41 @@
   <div id="title">당첨숫자</div>
   <div id="numbers"></div>
 
+  <!-- 🔥 워터마크 -->
+  <p class="credit">Created by Ai</p>
+
   <script>
     function drawLotto() {
-      let lotto = [];
+      const machine = document.getElementById("machine");
+      const title = document.getElementById("title");
+      const numbers = document.getElementById("numbers");
 
-      while (lotto.length < 6) {
-        let number = Math.floor(Math.random() * 45) + 1;
+      title.style.display = "none";
+      numbers.innerHTML = "";
 
-        if (!lotto.includes(number)) {
-          lotto.push(number);
+      machine.classList.add("shake");
+
+      setTimeout(() => {
+        machine.classList.remove("shake");
+
+        let lotto = [];
+
+        while (lotto.length < 6) {
+          let num = Math.floor(Math.random() * 45) + 1;
+          if (!lotto.includes(num)) {
+            lotto.push(num);
+          }
         }
-      }
 
-      lotto.sort(function(a, b) {
-        return a - b;
-      });
+        lotto.sort((a, b) => a - b);
 
-      document.getElementById("title").style.display = "block";
+        title.style.display = "block";
 
-      document.getElementById("numbers").innerHTML = lotto
-        .map(num => `<span class="ball">${num}</span>`)
-        .join("");
+        numbers.innerHTML = lotto
+          .map(n => `<span class="ball">${n}</span>`)
+          .join("");
+
+      }, 2000);
     }
   </script>
 
